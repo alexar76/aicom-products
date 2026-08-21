@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "${API_HOST_PORT:-8000}:8000"
+    environment:
+      DATABASE_URL: "postgresql://sentinel:sentinel@postgres:5432/sentinel"
+      ATLAS_BASE_URL: "http://atlas-hub:8001"  # replace with actual hub
+      ATLAS_AGENT_KEY: "demo-atlas-key"
+      AICOM_REGISTRY_URL: "http://registry:8002"
+      SENTINEL_AGENT_KEY: "demo-sentinel-key"
+      SANDBOX_DEMO_EMAIL: "operator@sentinel.local"
+      SANDBOX_DEMO_PASSWORD: "SentinelDemo123!"
+      SENTINEL_DAILY_INVOKE_BUDGET_USD: "2.00"
+      SECRET_KEY: "change-me"
+      REDIS_URL: "redis://redis:6379/0"
+    depends_on:
+      - postgres
+      - redis
+  web:
+    build:
+      context: ./frontend
+    ports:
+      - "${WEB_HOST_PORT:-3000}:3000"
+    environment:
+      VITE_SANDBOX_DEMO_EMAIL: "operator@sentinel.local"
+      VITE_SANDBOX_DEMO_PASSWORD: "SentinelDemo123!"
+    depends_on:
+      - api
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: sentinel
+      POSTGRES_PASSWORD: sentinel
+      POSTGRES_DB: sentinel
+    ports:
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+    ports:
+      - "${REDIS_HOST_PORT:-6379}:6379"
+
+volumes:
+  postgres_data:

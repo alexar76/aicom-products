@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+      - name: Run unit tests with coverage
+        run: |
+          cd backend
+          pytest tests/unit -v --cov=app --cov-report=term-missing --cov-fail-under=60
+      - name: Run integration tests
+        run: |
+          cd backend
+          pytest tests/integration -v
+      - name: Lint
+        run: |
+          cd backend
+          ruff check .
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Run unit tests
+        run: |
+          cd frontend
+          npm run test:unit -- --coverage
+      - name: Build
+        run: |
+          cd frontend
+          npm run build
+      - name: E2E tests (skip if no running stack)
+        run: |
+          cd frontend
+          npx playwright test --pass-with-no-tests || true

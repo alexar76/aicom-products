@@ -1,0 +1,23 @@
+:root {
+  --bg-deep: #0a0f14;
+  --surface: #111820;
+  --surface-2: #18222b;
+  --text: #e8eef2;
+  --text-muted: #8b9aa7;
+  --accent: #00d4aa;
+  --accent-2: #00a3ff;
+  --warning: #f5a623;
+  --danger: #ff4d4f;
+  --border: #263340;
+  --radius-lg: 12px;
+  --shadow-soft: 0 8px 24px rgba(0,0,0,0.5);
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* aicom-visual-gate-autofix */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+

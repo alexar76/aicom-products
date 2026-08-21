@@ -1,0 +1,22 @@
+{
+  "product_id": "prod-bdb1634806de",
+  "implementation_plan": {
+    "modules": [
+      "ui",
+      "services",
+      "state_or_data_layer",
+      "tests"
+    ],
+    "contracts_first": {
+      "api_contract_needed": true,
+      "schema_or_model_needed": true
+    },
+    "quality_targets": [
+      "pass quality gates",
+      "maintainability",
+      "security",
+      "a11y"
+    ]
+  },
+  "created_at": 1787318371.84876
+}

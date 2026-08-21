@@ -1,0 +1,18 @@
+{
+  "product_id": "prod-bdb1634806de",
+  "delivery_mode": "web_app",
+  "admin_instructions_applied": true,
+  "files": [
+    {
+      "path": "backend/requirements.txt",
+      "full_path": "/app/data/code/prod-bdb1634806de/backend/requirements.txt",
+      "content": "fastapi>=0.110\nuvicorn[standard]>=0.27\nsqlalchemy>=2.0\nalembic>=1.12\npydantic>=2.5\npydantic-settings>=2.0\naimarket-agent>=0.1.0\nhttpx>=0.26\npasslib[bcrypt]>=1.7.4\nbcrypt>=4.0\npyjwt>=2.8.0\napscheduler>=3.10\ncachetools>=5.3\nredis>=5.0\nslowapi>=0.1.9\nopenpyxl>=3.1\npython-multipart>=0.0.6\nemail-validator>=2.0\npython-dotenv>=1.0\npytest>=7.4\npytest-cov>=4.1\npytest-asyncio>=0.23\n"
+    }
+  ],
+  "dependencies": [],
+  "setup_instructions": "",
+  "test_commands": [],
+  "documentation": "",
+  "created_at": 1787318371.8494246,
+  "agent": "developer"
+}

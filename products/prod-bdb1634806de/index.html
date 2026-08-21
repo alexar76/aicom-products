@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentinel (670)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #6366f1;
+      --bg-deep: color-mix(in srgb, #0f172a 88%, #000);
+      --card: rgba(255,255,255,0.07);
+      --text: #f8fafc;
+      --muted: color-mix(in srgb, var(--text) 65%, transparent);
+      --head-font: 'Inter', system-ui, sans-serif;
+      --body-font: 'Inter', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--body-font);
+      background: var(--bg-deep);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in srgb, var(--accent) 35%, transparent), transparent),
+        radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--primary) 40%, transparent), transparent 50%);
+      color: var(--text);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+    .preview-note {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+      padding: 0.4rem 1rem;
+      opacity: 0.85;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem 5rem; }
+    .hero {
+      text-align: center;
+      padding: 3.5rem 1rem 3rem;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 10% 5% auto;
+      height: 55%;
+      background: repeating-linear-gradient(
+        45deg,
+        color-mix(in srgb, var(--accent) 12%, transparent) 0 12px,
+        transparent 12px 24px
+      );
+      border-radius: 24px;
+      opacity: 0.5;
+      z-index: 0;
+    }
+    .hero > * { position: relative; z-index: 1; }
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 22%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      font-weight: 600;
+    }
+    h1 {
+      font-family: var(--head-font);
+      font-size: clamp(2.25rem, 6vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .lead { color: var(--muted); font-size: 1.125rem; max-width: 640px; margin: 0 auto 1rem; }
+    .audience { color: var(--muted); font-size: 0.875rem; margin-bottom: 2rem; }
+    .cta {
+      display: inline-block;
+      padding: 1rem 2rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--primary) 60%, var(--accent)));
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 12px 40px color-mix(in srgb, var(--accent) 45%, transparent);
+      transition: transform 0.2s ease;
+    }
+    .cta:hover { transform: translateY(-2px); }
+    .section { margin-top: 3.5rem; }
+    h2 {
+      font-family: var(--head-font);
+      font-size: 1.75rem;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .feat {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+    }
+    .feat-icon {
+      display: block;
+      font-size: 1.5rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .feat h3 {
+      font-family: var(--head-font);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .feat-p { color: var(--muted); font-size: 0.875rem; }
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 1.75rem;
+      text-align: center;
+      position: relative;
+    }
+    .price-card.featured {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), 0 16px 48px color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+    .price-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #111;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+    .price-amt { font-size: 2rem; font-weight: 800; margin: 0.75rem 0; color: var(--accent); }
+    .price-blurb { color: var(--muted); font-size: 0.85rem; margin-bottom: 1rem; }
+    .price-cta {
+      display: inline-block;
+      padding: 0.6rem 1.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    .sticky-cta {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.75rem 1rem;
+      background: color-mix(in srgb, var(--bg-deep) 92%, #000);
+      border-top: 1px solid rgba(255,255,255,0.12);
+      z-index: 100;
+      text-align: center;
+    }
+    .sticky-cta a {
+      display: block;
+      padding: 0.85rem;
+      background: var(--accent);
+      color: #111;
+      font-weight: 700;
+      border-radius: 12px;
+      text-decoration: none;
+    }
+    @media (max-width: 768px) {
+      .sticky-cta { display: block; }
+      body { padding-bottom: 4.5rem; }
+    }
+    footer {
+      margin-top: 4rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+  </style>
+<style id="aicom-autofix-focus">
+/* aicom-visual-gate-autofix */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+</style></head>
+<body>
+  
+  <main class="wrap">
+    <section class="hero">
+      <span class="badge">full software</span>
+      <h1>Sentinel (670)</h1>
+      <p class="lead">Sentinel is an LLM-free, embeddable safety companion that answers &#x27;is it safe here right now?&#x27; for weather, wildfire, and flood hazards.</p>
+      <p class="audience">For Website owners and operators in travel &amp; hospitality, outdoor recreation, real estate, and event management; secondary: local news, insurance, public agencies, and enterprises with distributed safety needs.</p>
+      <a class="cta" href="#pricing">Get started</a>
+    </section>
+    <section id="features" class="section">
+      <h2>What you get</h2>
+      <div class="">
+        <article class="feat">
+          <span class="feat-icon" aria-hidden="true">✦</span>
+          <h3>Embeddable safety widget</h3>
+          <p class="feat-p">A single script tag that renders a location-aware safety badge/page on any website with no iframe chrome and no backend setup.</p>
+        </article>
+        <article class="feat">
+          <span class="feat-icon" aria-hidden="true">◆</span>
+          <h3>Location handling with privacy</h3>
+          <p class="feat-p">Manual city/coordinate entry as default, optional browser geolocation with consent, coordinates rounded to ~1 decimal before persistence.</p>
+        </article>
+        <article class="feat">
+          <span class="feat-icon" aria-hidden="true">●</span>
+          <h3>ATLAS capability invokes</h3>
+          <p class="feat-p">Invokes atlas.situation.brief@v1, atlas.fire.weather@v1, atlas.nearest.read@v1, persists receipt digests, and degrades gracefully.</p>
+        </article>
+        <article class="feat">
+          <span class="feat-icon" aria-hidden="true">▲</span>
+          <h3>Deterministic rule engine</h3>
+          <p class="feat-p">No LLM at runtime; maps evidence to CALM/WATCH/WARNING/EMERGENCY per hazard plus overall level.</p>
+        </article>
+        <article class="feat">
+          <span class="feat-icon" aria-hidden="true">★</span>
+          <h3>Signed evidence receipts</h3>
+          <p class="feat-p">Every advisory displays a receipt digest linking to the signed ATLAS response; never show an advisory without a receipt.</p>
+        </article>
+        <article class="feat">
+          <span class="feat-icon" aria-hidden="true">◎</span>
+          <h3>Free-tier 402 resilience</h3>
+          <p class="feat-p">When the mesh returns 402 payment_required, keep showing the last advisory labeled as cached with absolute and relative time, read…</p>
+        </article></div>
+    </section>
+    
+    <footer id="book">prod-bdb1634806de · AI-Factory</footer>
+  </main>
+  <div class=""><a href="#book">Book your spot</a></div>
+<section id="pricing" aria-label="Pricing"></section><div class="aifactory-badge" style="margin-top:24px;padding:8px 12px;font:12px/1.4 system-ui;opacity:.85;">Made with <a href="https://magic-ai-factory.com" target="_blank" rel="noopener noreferrer">AI-Factory</a></div></body>
+</html>

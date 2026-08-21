@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00d4aa" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#00d4aa" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="topo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18222b"/>
+      <stop offset="100%" stop-color="#111820"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#topo)"/>
+  <!-- topographic contours -->
+  <g stroke="#263340" stroke-width="1" fill="none">
+    <path d="M0,100 Q200,50 400,100 T800,100"/>
+    <path d="M0,200 Q200,150 400,200 T800,200"/>
+    <path d="M0,300 Q200,250 400,300 T800,300"/>
+    <path d="M0,400 Q200,350 400,400 T800,400"/>
+    <path d="M100,0 Q150,200 100,500"/>
+    <path d="M300,0 Q350,200 300,500"/>
+    <path d="M500,0 Q550,200 500,500"/>
+    <path d="M700,0 Q750,200 700,500"/>
+  </g>
+  <!-- hazard overlays -->
+  <g fill="none" stroke-width="2">
+    <path d="M150,120 Q200,80 250,120 Q200,160 150,120" stroke="#00a3ff"/>
+    <path d="M550,300 Q600,260 650,300 Q600,340 550,300" stroke="#ff4d4f"/>
+    <path d="M350,380 Q400,340 450,380 Q400,420 350,380" stroke="#f5a623"/>
+  </g>
+  <!-- central beacon -->
+  <circle cx="400" cy="250" r="100" fill="url(#glow)" opacity="0.6"/>
+  <circle cx="400" cy="250" r="40" fill="#00d4aa" opacity="0.8"/>
+  <text x="400" y="260" text-anchor="middle" fill="#0a0f14" font-family="Space Grotesk, sans-serif" font-size="24" font-weight="700">S</text>
+  <!-- receipt fragment -->
+  <g transform="translate(560,80)">
+    <rect width="140" height="40" rx="5" fill="#18222b" stroke="#263340"/>
+    <text x="10" y="20" fill="#8b9aa7" font-family="monospace" font-size="10">sha256:a1b2c3d4...</text>
+    <text x="10" y="35" fill="#00d4aa" font-family="monospace" font-size="10">signed receipt</text>
+  </g>
+</svg>
