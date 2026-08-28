@@ -7,28 +7,72 @@
 
 # aicom-products
 
-Selective catalog of **full** products built by [AI-Factory](https://github.com/alexar76/aicom).
+<p align="center">
+  <img src="docs/assets/hero.svg" alt="AI-Factory invents and builds products — cataloged in aicom-products" width="100%" />
+</p>
 
-Each subdirectory under `products/` is one factory product id (`prod-…`), published on demand — not every pipeline run, and never the whole monorepo.
+<p align="center">
+  <strong>Products invented and built by <a href="https://github.com/alexar76/aicom">AI-Factory</a></strong><br/>
+  Full source trees of real apps the factory conceived, coded, tested, and shipped — not templates.
+</p>
 
-GitHub: [alexar76/aicom-products](https://github.com/alexar76/aicom-products)
+<p align="center">
+  <a href="PRODUCTS.md">Product index</a>
+  ·
+  <a href="https://github.com/alexar76/aicom">Factory monorepo</a>
+  ·
+  <a href="https://prod-bdb1634806de.vercel.app/">Sentinel live</a>
+</p>
 
-## Layout
+---
+
+## Gallery
+
+### 1. Sentinel — Verified Safety Companion
+
+Weather, wildfire and flood advisory with **signed evidence receipts** — no black-box AI. Built end-to-end by the factory (mesh invoke → ATLAS layers → live Vercel).
+
+<p align="center">
+  <a href="https://prod-bdb1634806de.vercel.app/">
+    <img src="docs/gallery/sentinel.png" alt="Sentinel Verified Safety Companion — location widget and safety report" width="720" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="products/prod-bdb1634806de/"><code>products/prod-bdb1634806de</code></a>
+  ·
+  <strong><a href="https://prod-bdb1634806de.vercel.app/">Live demo</a></strong>
+</p>
+
+### 2. Relay — Verified Handoff Desk
+
+Paste an AI draft, run a skeptic pass, ship a **human-verified handoff** to the client. Factory-built full stack under `products/prod-e1a3b0abf16a/`.
+
+<p align="center">
+  <a href="products/prod-e1a3b0abf16a/"><code>products/prod-e1a3b0abf16a</code></a>
+</p>
+
+---
+
+## What this repo is
+
+Each subdirectory under `products/` is one factory product id (`prod-…`): **complete** application source (backend, frontend, docs) as produced by the pipeline — published on demand, never the whole monorepo dump.
 
 ```
-products/<product_id>/   # full product tree (source + docs; no node_modules / .venv)
+products/<product_id>/   # full product tree (no node_modules / .venv)
 ```
 
-## Publish (like other satellites)
+See [PRODUCTS.md](PRODUCTS.md) for the live index.
 
-Shell / docs (this folder → GitHub), preserving existing `products/`:
+## Publish
+
+**Shell** (this README / gallery / docs → GitHub), preserving existing `products/`:
 
 ```bash
 GH_PAT=… ./scripts/publish_all_repos.sh --satellite aicom-products
-# or: ./scripts/mirror_satellites.sh --satellite aicom-products
 ```
 
-Selective full product tree from the factory host:
+**Product trees** from the factory host:
 
 ```bash
 GH_PAT=… ./scripts/publish_factory_product_catalog.sh \
@@ -38,7 +82,4 @@ GH_PAT=… ./scripts/publish_factory_product_catalog.sh \
 Auth: `GH_PAT` for **alexar76**. Remote: `https://github.com/alexar76/aicom-products.git`.
 Do not freestyle remotes.
 
-## Gate
-
-README badge row + `CONTRIBUTING.md` are required when the factory catalog gate is armed
-(Settings → Product catalog + `GH_PAT` on the host). See `docs/product-catalog-github.md` in aicom.
+**Gitea#2** canon mirror (family host): `ssh://git@gitea2/alexar76/aicom-products.git` — same layout.
