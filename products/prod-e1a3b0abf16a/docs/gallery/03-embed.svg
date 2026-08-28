@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" role="img" aria-label="Embeddable verification widget on a third-party site">
+  <rect width="820" height="360" fill="#1c1410"/>
+  <g transform="translate(80,60)">
+    <rect width="660" height="240" rx="6" fill="#fbf7ee"/>
+    <text x="28" y="44" font-family="Cormorant Garamond, Georgia, serif" font-size="24" font-weight="600" fill="#1c1410">Acme Studio — Portfolio</text>
+    <text x="28" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5a4a3a">Strategy briefs that survive procurement review.</text>
+    <g transform="translate(28,120)">
+      <rect width="500" height="80" rx="6" fill="#fbf7ee" stroke="#c9b993"/>
+      <text x="16" y="28" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="600" fill="#1c1410">Northwind · Marketplace Launch</text>
+      <text x="16" y="48" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5a4a3a">Approved brief · 0.9k chars</text>
+      <g transform="translate(360,16)">
+        <rect width="124" height="26" rx="13" fill="#e6efd9" stroke="#2f6b3a"/>
+        <path d="M14 13 l4 4 l8 -8" fill="none" stroke="#2f6b3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="32" y="17" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#2f6b3a">Human-verified by Acme</text>
+      </g>
+    </g>
+    <text x="28" y="220" font-family="JetBrains Mono, monospace" font-size="10" fill="#5a4a3a">&lt;script src="/embed.js?token=..." async&gt;&lt;/script&gt;</text>
+  </g>
+</svg>

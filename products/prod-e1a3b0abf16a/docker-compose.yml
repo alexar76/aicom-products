@@ -1,0 +1,55 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: relay/api:0.1.0
+    environment:
+      RELAY_DB_PATH: /data/relay.db
+      SESSION_SECRET: ${SESSION_SECRET:-dev-secret-change-me-please-32-chars-min}
+      CORS_ORIGIN: ${CORS_ORIGIN:-./}
+      REDIS_URL: redis://redis:6379/0
+      SANDBOX_DEMO_EMAIL: ${SANDBOX_DEMO_EMAIL-[email protected]}
+      SANDBOX_DEMO_PASSWORD: ${SANDBOX_DEMO_PASSWORD:-RelayDemo!2025}
+    volumes:
+      - relay-data:/data
+    ports:
+      - "${API_HOST_PORT:-8000}:8000"
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('./healthz',timeout=2).status==200 else sys.exit(1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    image: relay/web:0.1.0
+    environment:
+      VITE_API_BASE: /api
+      VITE_DEMO_EMAIL: ${VITE_DEMO_EMAIL-[email protected]}
+      VITE_DEMO_PASSWORD: ${VITE_DEMO_PASSWORD:-RelayDemo!2025}
+    ports:
+      - "${WEB_HOST_PORT:-5173}:5173"
+    depends_on:
+      - api
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "${REDIS_HOST_PORT:-6379}:6379"
+    volumes:
+      - relay-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  relay-data:
+  relay-redis:

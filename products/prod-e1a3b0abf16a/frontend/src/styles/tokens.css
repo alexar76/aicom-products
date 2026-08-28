@@ -1,0 +1,44 @@
+:root {
+  --bg-paper: #f5efe3;
+  --bg-deep: #1c1410;
+  --surface: #fbf7ee;
+  --surface-2: #efe6d2;
+  --ink: #1c1410;
+  --ink-muted: #5a4a3a;
+  --rule: #c9b993;
+  --accent: #8a1c2b;
+  --accent-2: #5a0f1d;
+  --verified: #2f6b3a;
+  --verified-bg: #e6efd9;
+  --radius-lg: 6px;
+  --radius-sm: 2px;
+  --shadow-soft: 0 1px 0 rgba(28, 20, 16, 0.06), 0 8px 24px rgba(28, 20, 16, 0.08);
+  --seal-shadow: 0 2px 0 rgba(138, 28, 43, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+  --font-display: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --measure: 65ch;
+}
+
+/* aicom-visual-gate-autofix */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* aicom-visual-gate-autofix page shell */
+.page-shell {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+}
+main:not(.container):not(.page-shell):not(.auth-page):not(.share-page):not(.full-bleed) {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+}
+

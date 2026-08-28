@@ -1,0 +1,78 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install backend
+        run: |
+          pip install -e .[dev]
+      - name: Run unit tests (coverage floor 60%)
+        run: pytest tests/unit -q --cov=app --cov-fail-under=60
+      - name: Run integration tests
+        run: pytest tests/integration -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install frontend
+        run: npm install --no-audit --no-fund
+      - name: Build embed widget
+        run: npm run build:embed
+      - name: Build SPA
+        run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install backend
+        working-directory: backend
+        run: pip install -e .[dev]
+      - name: Start API
+        working-directory: backend
+        env:
+          RELAY_DB_PATH: ./.data/relay.db
+          SESSION_SECRET: ci-secret-please-be-32-chars-or-more
+        run: |
+          mkdir -p ./.data
+          alembic upgrade head
+          uvicorn app.main:app --host 127.0.0.1 --port 8000 &
+          sleep 3
+      - name: Install frontend
+        working-directory: frontend
+        run: npm install --no-audit --no-fund
+      - name: Playwright e2e
+        working-directory: frontend
+        env:
+          PLAYWRIGHT_BASE_URL: ./
+        run: npx playwright install --with-deps chromium && npx playwright test

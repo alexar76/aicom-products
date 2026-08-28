@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" role="img" aria-label="Operator inbox — pending, approved, rejected">
+  <rect width="820" height="360" fill="#f5efe3"/>
+  <g font-family="Inter, system-ui, sans-serif">
+    <text x="40" y="56" font-size="22" font-family="Cormorant Garamond, Georgia, serif" font-weight="600" fill="#1c1410">Inbox</text>
+    <g transform="translate(40,84)">
+      <rect width="240" height="200" rx="6" fill="#fbf7ee" stroke="#c9b993"/>
+      <text x="16" y="28" font-size="11" font-family="JetBrains Mono, monospace" fill="#5a4a3a">PENDING · 2</text>
+      <g font-size="13" fill="#1c1410">
+        <text x="16" y="64" font-weight="600">Atlas Coffee · Q2 Brief</text>
+        <text x="16" y="84" fill="#5a4a3a">draft · 1.2k chars · ChatGPT</text>
+        <text x="16" y="128" font-weight="600">Lumen Studios · Pricing Page</text>
+        <text x="16" y="148" fill="#5a4a3a">draft · 0.6k chars · ChatGPT</text>
+      </g>
+    </g>
+    <g transform="translate(290,84)">
+      <rect width="240" height="200" rx="6" fill="#fbf7ee" stroke="#c9b993"/>
+      <text x="16" y="28" font-size="11" font-family="JetBrains Mono, monospace" fill="#2f6b3a">APPROVED · 1</text>
+      <g font-size="13" fill="#1c1410">
+        <text x="16" y="64" font-weight="600">Northwind · Marketplace</text>
+        <text x="16" y="84" fill="#5a4a3a">approved · 0.9k chars · Claude</text>
+        <text x="16" y="148" fill="#5a4a3a" font-family="JetBrains Mono, monospace" font-size="10">/share/8K…ab</text>
+      </g>
+    </g>
+    <g transform="translate(540,84)">
+      <rect width="240" height="200" rx="6" fill="#fbf7ee" stroke="#c9b993"/>
+      <text x="16" y="28" font-size="11" font-family="JetBrains Mono, monospace" fill="#8a1c2b">REJECTED · 1</text>
+      <g font-size="13" fill="#1c1410">
+        <text x="16" y="64" font-weight="600">Lumen · Pricing (v1)</text>
+        <text x="16" y="84" fill="#5a4a3a">rejected · hype tone detected</text>
+      </g>
+    </g>
+  </g>
+</svg>

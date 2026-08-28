@@ -1,0 +1,26 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Relay — Verified Handoff Desk",
+    "version": "0.1.0",
+    "description": "Paste an AI draft, run a skeptic pass, and publish a Human-verified handoff to your client."
+  },
+  "paths": {
+    "/healthz": { "get": { "summary": "Liveness + DB ping", "responses": { "200": { "description": "ok" } } } },
+    "/api/auth/signup": { "post": { "summary": "Create operator + workspace", "responses": { "201": { "description": "created" } } } },
+    "/api/auth/login": { "post": { "summary": "Log in", "responses": { "200": { "description": "ok" } } } },
+    "/api/auth/logout": { "post": { "summary": "Log out", "responses": { "200": { "description": "ok" } } } },
+    "/api/auth/me": { "get": { "summary": "Current operator + workspace", "responses": { "200": { "description": "ok" } } } },
+    "/api/handoffs": { "get": { "summary": "List handoffs" }, "post": { "summary": "Create handoff" } },
+    "/api/handoffs/{id}": { "get": { "summary": "Handoff detail" } },
+    "/api/handoffs/{id}/verify": { "post": { "summary": "Submit skeptic pass" } },
+    "/api/handoffs/{id}/approve": { "post": { "summary": "Approve handoff" } },
+    "/api/handoffs/{id}/reject": { "post": { "summary": "Reject handoff" } },
+    "/api/handoffs/{id}/receipt.json": { "get": { "summary": "JSON receipt" } },
+    "/api/handoffs/{id}/embed-snippet": { "get": { "summary": "Embed snippet" } },
+    "/api/handoffs/{id}/audit": { "get": { "summary": "Audit timeline" } },
+    "/api/public/handoffs/{token}": { "get": { "summary": "Public read of approved handoff" } },
+    "/api/workspace/branding": { "get": { "summary": "Get branding" }, "put": { "summary": "Update branding" } },
+    "/api/workspace/export.csv": { "get": { "summary": "Workspace CSV export" } }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RelayHandoffReceipt",
+  "type": "object",
+  "required": [
+    "handoff_id",
+    "created_at",
+    "operator_email",
+    "workspace_name",
+    "verification_items",
+    "approval_state",
+    "content_sha256",
+    "share_url",
+    "verification_source"
+  ],
+  "properties": {
+    "handoff_id": { "type": "string" },
+    "created_at": { "type": ["string", "null"] },
+    "approved_at": { "type": ["string", "null"] },
+    "operator_email": { "type": "string" },
+    "workspace_name": { "type": "string" },
+    "client_name": { "type": "string" },
+    "project_name": { "type": "string" },
+    "source_ai_tool": { "type": "string" },
+    "verification_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "passed", "notes"],
+        "properties": {
+          "category": { "type": "string" },
+          "passed": { "type": "boolean" },
+          "notes": { "type": "string" },
+          "reviewer_email": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "approval_state": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+    "content_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "share_url": { "type": "string", "format": "uri" },
+    "verification_source": { "type": "string", "enum": ["local", "metis", "unavailable"] },
+    "audit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "created_at"],
+        "properties": {
+          "id": { "type": "string" },
+          "action": { "type": "string" },
+          "actor_email": { "type": ["string", "null"] },
+          "payload_json": { "type": ["string", "null"] },
+          "created_at": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{"root":["./src/api.ts","./src/main.tsx","./src/router.tsx","./src/vite-env.d.ts","./src/pages/Branding.tsx","./src/pages/HandoffDetail.tsx","./src/pages/Inbox.tsx","./src/pages/Login.tsx","./src/pages/NewHandoff.tsx","./src/pages/Share.tsx","./src/pages/Signup.tsx","./embed/embed.ts"],"version":"5.9.3"}

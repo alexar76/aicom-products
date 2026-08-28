@@ -1,0 +1,27 @@
+[project]
+name = "relay-backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]",
+    "sqlalchemy>=2.0",
+    "argon2-cffi",
+    "itsdangerous",
+    "pydantic[email]",
+    "pydantic-settings",
+    "httpx",
+    "python-multipart",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "httpx",
+    "alembic",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

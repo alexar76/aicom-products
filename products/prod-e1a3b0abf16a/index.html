@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relay — Verified Handoff Desk</title>
+  <meta name="description" content="Ship AI drafts to clients with a human-verified handoff. Relay gives agencies, consultants, and in-house teams a skeptic verification pass, branded share page, and JSON receipt.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:ital,opsz,wght@0,14..32,400..600;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+<style id="aicom-autofix-focus">
+/* aicom-visual-gate-autofix */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+</style></head>
+<body>
+  <!-- Wax seal SVG defs -->
+  <svg style="display:none" aria-hidden="true">
+    <defs>
+      <filter id="seal-grain" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="seal-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1c1410" flood-opacity="0.25"/>
+      </filter>
+    </defs>
+    <symbol id="wax-seal" viewBox="0 0 96 96">
+      <circle cx="48" cy="48" r="46" fill="#8a1c2b" filter="url(#seal-grain)"/>
+      <circle cx="48" cy="48" r="46" fill="none" stroke="#5a0f1d" stroke-width="1.5"/>
+      <circle cx="48" cy="48" r="38" fill="none" stroke="#fbf7ee" stroke-width="1" opacity="0.3"/>
+      <text x="48" y="56" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="36" font-weight="700" fill="#fbf7ee">R</text>
+    </symbol>
+    <symbol id="badge-check" viewBox="0 0 64 64">
+      <rect x="2" y="2" width="60" height="60" rx="6" fill="#2f6b3a" stroke="#1c1410" stroke-width="1.5"/>
+      <path d="M18 34 l9 9 19-19" fill="none" stroke="#fbf7ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="icon-envelope" viewBox="0 0 24 24">
+      <rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="#1c1410" stroke-width="1.5"/>
+      <path d="M2 8 l10 7 10-7" fill="none" stroke="#1c1410" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-quill" viewBox="0 0 24 24">
+      <path d="M6 18 l4-4 M10 14 l7-7 a2 2 0 0 1 3 3 l-7 7" fill="none" stroke="#1c1410" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M4 20 l4-2" fill="none" stroke="#1c1410" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="divider-seal" viewBox="0 0 200 24">
+      <line x1="0" y1="12" x2="80" y2="12" stroke="#c9b993" stroke-width="1"/>
+      <circle cx="100" cy="12" r="8" fill="#8a1c2b" filter="url(#seal-grain)"/>
+      <text x="100" y="16" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="10" font-weight="700" fill="#fbf7ee">R</text>
+      <line x1="120" y1="12" x2="200" y2="12" stroke="#c9b993" stroke-width="1"/>
+    </symbol>
+  </svg>
+
+  <nav class="navbar" role="navigation" aria-label="Main">
+    <div class="nav-inner">
+      <a href="#pricing" class="nav-logo" aria-label="Relay home">Relay</a>
+      <div class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#demo">Sample</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="#cta" class="btn-primary btn-small">Start free</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Ship AI drafts to clients with a human‑verified handoff</h1>
+        <p class="hero-sub">For agencies, consultants, and in‑house teams who want a visible trust signal — not just a paste.</p>
+        <div class="hero-ctas">
+          <a href="#cta" class="btn-primary">Start a free handoff</a>
+          <a href="#demo" class="btn-secondary">See a sample share page</a>
+        </div>
+      </div>
+      <div class="hero-seal" aria-hidden="true">
+        <svg width="120" height="120"><use href="#wax-seal"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="how" class="section how">
+      <h2>How a handoff works</h2>
+      <div class="steps">
+        <div class="step">
+          <svg width="48" height="48"><use href="#icon-quill"/></svg>
+          <h3>1. Paste your AI draft</h3>
+          <p>Drop in the text from ChatGPT, Claude, or any tool. Add client and project details — that's it.</p>
+        </div>
+        <div class="step">
+          <svg width="48" height="48"><use href="#badge-check"/></svg>
+          <h3>2. Run the skeptic pass</h3>
+          <p>Our structured checklist (claims, sources, tone, risk) flags what needs a human eye before publishing.</p>
+        </div>
+        <div class="step">
+          <svg width="48" height="48"><use href="#icon-envelope"/></svg>
+          <h3>3. Approve &amp; publish</h3>
+          <p>One click to approve — your client gets a branded share page with a green “Human‑verified” badge.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo" class="section demo">
+      <h2>What your clients see</h2>
+      <div class="share-mock">
+        <div class="share-badge">
+          <svg width="32" height="32"><use href="#badge-check"/></svg>
+          <span>Human‑verified by Your Agency</span>
+        </div>
+        <div class="share-content">
+          <p class="share-meta">Project: Q3 Brand Strategy Brief · Client: Acme Corp</p>
+          <div class="share-text">
+            <p>This is where the approved handoff text appears — clean, readable, and branded with your logo and accent color. No AI watermarks, no “draft” stigma.</p>
+          </div>
+        </div>
+        <div class="share-footer">Made with Relay</div>
+      </div>
+    </section>
+
+    <section id="trust" class="section trust">
+      <h2>Built for trust</h2>
+      <div class="trust-grid">
+        <div class="trust-card">
+          <h3>JSON Receipt Export</h3>
+          <p>Every handoff comes with a machine‑readable receipt: timestamps, operator, verification notes, and a content hash — ready for compliance teams.</p>
+          <pre class="code-snippet"><code>{
+  "handoff_id": "a1b2c3...",
+  "approved_at": "2025-...",
+  "operator_email": "[email protected]",
+  "verification_items": [...],
+  "content_sha256": "abc123..."
+}</code></pre>
+        </div>
+        <div class="trust-card">
+          <h3>Embeddable Badge</h3>
+          <p>Put the “Human‑verified” badge on your own site. A single script tag turns your portfolio into a trust signal.</p>
+          <pre class="code-snippet"><code>&lt;script src="https://relay.app/embed.js?token=..." async&gt;&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="section pricing">
+      <h2>Pricing</h2>
+      <div class="pricing-grid">
+        <div class="plan">
+          <h3>Solo</h3>
+          <p class="price">$19<span>/mo</span></p>
+          <ul>
+            <li>1 operator</li>
+            <li>Unlimited handoffs</li>
+            <li>Basic branding</li>
+            <li>JSON receipts</li>
+          </ul>
+          <a href="#cta" class="btn-outline">Start free</a>
+        </div>
+        <div class="plan plan-highlight">
+          <div class="plan-badge">Recommended</div>
+          <h3>Team</h3>
+          <p class="price">$79<span>/mo</span></p>
+          <ul>
+            <li>Up to 10 operators</li>
+            <li>Custom branding</li>
+            <li>Audit timeline</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#cta" class="btn-primary">Start free</a>
+        </div>
+        <div class="plan">
+          <h3>Agency</h3>
+          <p class="price">$199<span>/mo</span></p>
+          <ul>
+            <li>Unlimited operators</li>
+            <li>White-label share page</li>
+            <li>CSV export</li>
+            <li>Dedicated onboarding</li>
+          </ul>
+          <a href="#cta" class="btn-outline">Contact us</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section faq">
+      <h2>FAQ</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>What is a skeptic pass?</summary>
+          <p>A structured human review checklist covering claims, sources, tone, and risk. It ensures every AI‑generated draft gets a real human look before it reaches a client.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is the share page indexed by search engines?</summary>
+          <p>No. Share pages are no‑index, no‑follow by default. They are meant for private client sharing, not public SEO.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Can I white‑label the share page?</summary>
+          <p>Yes, on the Agency plan you can remove all Relay branding and use your own domain via CNAME.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What does the JSON receipt include?</summary>
+          <p>Handoff ID, timestamps, operator email, verification checklist results, approval state, content SHA‑256 hash, and the public share URL — everything a compliance team needs.</p>
+        </details>
+        <details class="faq-item">
+          <summary>How does the embed work?</summary>
+          <p>Copy a one‑line <code>&lt;script&gt;</code> snippet into any HTML page. The badge loads asynchronously, shows your workspace name and “Human‑verified”, and links to the full share page.</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="cta" class="section cta">
+      <h2>Ready to build trust into every handoff?</h2>
+      <p>Start with a free handoff — no credit card, no setup.</p>
+      <a href="#pricing" class="btn-primary btn-large">Start a free handoff</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Relay — Verified Handoff Desk. Every AI draft, human‑checked.</p>
+  </footer>
+
+  <script src="./app.js" defer></script>
+<div class="aifactory-badge" style="margin-top:24px;padding:8px 12px;font:12px/1.4 system-ui;opacity:.85;">Made with <a href="https://magic-ai-factory.com" target="_blank" rel="noopener noreferrer">AI-Factory</a></div></body>
+</html>
