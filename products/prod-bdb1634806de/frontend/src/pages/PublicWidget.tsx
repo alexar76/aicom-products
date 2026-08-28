@@ -39,6 +39,7 @@ export default function PublicWidget() {
   const [loading, setLoading] = useState(false);
   const [advisory, setAdvisory] = useState<AdvisoryResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const [privacyNote] = useState("Location rounded to ~1 decimal degree; exact coordinates not stored.");
 
   const handleGeolocate = () => {
@@ -48,8 +49,8 @@ export default function PublicWidget() {
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setLat((Math.round(pos.coords.latitude * 10) / 10).toFixed(1));
-        setLon((Math.round(pos.coords.longitude * 10) / 10).toFixed(1));
+        setLat((Math.round(pos.coords.latitude * 10) / 10)?.toFixed(1));
+        setLon((Math.round(pos.coords.longitude * 10) / 10)?.toFixed(1));
       },
       () => {
         alert("Location permission denied. Please enter coordinates manually.");
@@ -63,8 +64,8 @@ export default function PublicWidget() {
       const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(manualCity)}`);
       const data = await response.json();
       if (data && data.length > 0) {
-        setLat((Math.round(parseFloat(data[0].lat) * 10) / 10).toFixed(1));
-        setLon((Math.round(parseFloat(data[0].lon) * 10) / 10).toFixed(1));
+        setLat((Math.round(parseFloat(data[0].lat) * 10) / 10)?.toFixed(1));
+        setLon((Math.round(parseFloat(data[0].lon) * 10) / 10)?.toFixed(1));
       }
     } catch {
       alert("City lookup failed. Please enter coordinates manually.");
@@ -75,22 +76,30 @@ export default function PublicWidget() {
     setLoading(true);
     setError(null);
     try {
-      const roundedLat = parseFloat(lat).toFixed(1);
-      const roundedLon = parseFloat(lon).toFixed(1);
+      const roundedLat = parseFloat(lat)?.toFixed(1);
+      const roundedLon = parseFloat(lon)?.toFixed(1);
       const response = await fetch(`/api/advisory?lat=${roundedLat}&lon=${roundedLon}`);
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
       const data: AdvisoryResponse = await response.json();
       setAdvisory(data);
+      setToast("Safety report updated");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch advisory");
+      const msg = err instanceof Error ? err.message : "Failed to fetch advisory";
+      setError(msg);
+      setToast(msg);
     } finally {
       setLoading(false);
     }
   };
 
   return (
+    <>
+      <div role="status" aria-live="polite" className="toast-status" style={{ position: "fixed", bottom: "1rem", right: "1rem", background: "var(--surface-2)", border: "1px solid var(--border)", padding: "0.75rem 1rem", borderRadius: "8px", zIndex: 20, display: toast ? "block" : "none" }}>
+        {toast}
+      </div>
+
     <div className="public-widget">
       <h1>Sentinel Verified Safety Companion</h1>
       <p className="muted">Weather, wildfire and flood advisory with signed evidence receipts — no black-box AI.</p>
@@ -150,7 +159,7 @@ export default function PublicWidget() {
                 <h3>{h.type}</h3>
                 <span className={levelClass(h.level)}>{h.level}</span>
                 {h.measurement && <p>{h.measurement}</p>}
-                {h.distance_km !== undefined && <p className="muted">Distance: {h.distance_km.toFixed(1)} km</p>}
+                {h.distance_km !== undefined && <p className="muted">Distance: {h.distance_km?.toFixed(1)} km</p>}
                 {h.sim && <p className="muted">SIM data</p>}
                 {h.explanation && <p className="muted">{h.explanation}</p>}
                 {h.receipt && (
@@ -187,5 +196,6 @@ export default function PublicWidget() {
         </pre>
       </div>
     </div>
+    </>
   );
 }

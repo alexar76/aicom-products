@@ -44,7 +44,7 @@ async def send_heartbeat():
                 resp = await client.post(
                     f"{settings.aicom_registry_url}/api/agents/heartbeat",
                     json=payload,
-                    headers={"X-Agent-Key": settings.sentinel_agent_key},
+                    headers={k: v for k, v in {"X-AIMarket-Sandbox-Visitor": __import__("os").environ.get("AIMARKET_SANDBOX_VISITOR", ""), "X-Payment-Channel": __import__("os").environ.get("AIMARKET_PAYMENT_CHANNEL", ""), "X-Payment-Channel-Secret": __import__("os").environ.get("AIMARKET_PAYMENT_CHANNEL_SECRET", ""), }.items() if v},
                     timeout=5.0
                 )
                 success = resp.status_code == 200

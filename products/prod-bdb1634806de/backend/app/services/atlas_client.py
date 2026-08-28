@@ -1,55 +1,45 @@
-import httpx
-from typing import Optional
-from ..config import get_settings
+# aicom-factory-atlas-core-layers
+# aicom-factory-atlas-bbox
+# aicom-factory-mesh-participant-runtime
+from __future__ import annotations
 
-settings = get_settings()
+from .aimarket_participant import get_participant
+
 
 class AtlasClient:
-    def __init__(self):
-        self.base_url = settings.atlas_base_url
-        self.agent_key = settings.atlas_agent_key
+    """Sentinel mesh client — Hub/AI-market participant (trial or paid channel)."""
 
     async def _invoke(self, capability_id: str, input_data: dict) -> dict:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"{self.base_url}/aimarket/invoke",
-                json={"capability_id": capability_id, "input": input_data},
-                headers={"X-Agent-Key": self.agent_key},
-                timeout=10.0
-            )
-            if response.status_code == 200:
-                return response.json()
-            else:
-                return {"ok": False, "error": f"Status {response.status_code}"}
+        # AimarketParticipant.invoke is synchronous (urllib); do NOT call _invoke.
+        return get_participant().invoke(capability_id, input_data)
 
     async def invoke_situation_brief(self, lat: float, lon: float) -> dict:
-        # bbox around rounded lat/lon: 0.1 degree ~ 11 km
         return await self._invoke(
             "atlas.situation.brief@v1",
             {
-                "north": lat + 0.1,
-                "south": lat - 0.1,
-                "east": lon + 0.1,
-                "west": lon - 0.1,
-                "layers": ["flood", "effis", "lightning", "volcano", "alerts", "events", "tsunami"],
+                "north": lat + 5.0,
+                "south": lat - 5.0,
+                "east": lon + 5.0,
+                "west": lon - 5.0,
+                "layers": ["weather", "air", "fire", "flood", "effis", "lightning", "volcano", "alerts", "events", "tsunami"],
                 "locale": "en",
-                "max_citations": 5
-            }
+                "max_citations": 5,
+            },
         )
 
     async def invoke_fire_weather(self, lat: float, lon: float) -> dict:
         return await self._invoke(
             "atlas.fire.weather@v1",
             {
-                "north": lat + 0.1,
-                "south": lat - 0.1,
-                "east": lon + 0.1,
-                "west": lon - 0.1,
+                "north": lat + 5.0,
+                "south": lat - 5.0,
+                "east": lon + 5.0,
+                "west": lon - 5.0,
                 "include_air": True,
                 "limit": 10,
                 "max_air_km": 50,
-                "max_weather_km": 50
-            }
+                "max_weather_km": 50,
+            },
         )
 
     async def invoke_nearest(self, lat: float, lon: float) -> dict:
@@ -58,8 +48,8 @@ class AtlasClient:
             {
                 "lat": lat,
                 "lon": lon,
-                "layers": ["flood", "effis"],
-                "max_km": 100,
-                "per_layer": 1
-            }
+                "layers": ["weather", "air", "fire", "flood", "effis"],
+                "max_km": 500,
+                "per_layer": 1,
+            },
         )

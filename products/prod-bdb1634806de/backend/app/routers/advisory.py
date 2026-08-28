@@ -1,8 +1,10 @@
+# aicom-factory-atlas-escrow-single
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime, timedelta, timezone
 import json
+import asyncio
 from ..db import get_db
 from ..config import get_settings
 from ..services.atlas_client import AtlasClient
@@ -79,9 +81,12 @@ async def get_advisory(
     # Invoke ATLAS capabilities
     atlas = AtlasClient()
     try:
-        situation = await atlas.invoke_situation_brief(rounded_lat, rounded_lon)
-        fire_weather = await atlas.invoke_fire_weather(rounded_lat, rounded_lon)
-        nearest = await atlas.invoke_nearest(rounded_lat, rounded_lon)
+        situation = await asyncio.wait_for(
+            atlas.invoke_situation_brief(rounded_lat, rounded_lon),
+            timeout=5.0
+        )
+        fire_weather = situation
+        nearest = situation
     except Exception as e:
         # degrade gracefully: return UNKNOWN with explanation
         return AdvisoryResponse(

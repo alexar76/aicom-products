@@ -36,6 +36,13 @@ def _demo_credentials() -> tuple[str, str] | None:
     return email, password
 
 
+
+def _aicom_demo_user_id(email: str) -> str:
+    """Stable PK across serverless instances (live_ephemeral_identity gate)."""
+    import uuid as _uuid
+    return str(_uuid.uuid5(_uuid.NAMESPACE_URL, f"aicom-demo:{email.strip().lower()}"))
+
+# aicom-factory-demo-uuid5
 def seed_demo_user(db: Session | None = None) -> None:
     """Create or refresh the demo operator. Never raises."""
     creds = _demo_credentials()
@@ -48,7 +55,9 @@ def seed_demo_user(db: Session | None = None) -> None:
         user = session.query(User).filter(User.email == email).first()
         hashed = hash_password(password)
         if user is None:
-            user = User(email=email, hashed_password=hashed, role="admin")
+            user = User(
+            id=_aicom_demo_user_id(email),
+            email=email, hashed_password=hashed, role="admin")
             session.add(user)
         else:
             user.hashed_password = hashed
