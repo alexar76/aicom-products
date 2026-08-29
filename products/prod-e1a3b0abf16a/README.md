@@ -4,10 +4,6 @@
 
 > 🌐 [English](README.md) · [Español](README.es.md)
 
-<!-- aicom-live-url -->
-**Live:** [https://magic-ai-factory.com/api/sandbox/view/sandbox-be96fcda86f64418b1119a11df51093e?preview_token=1k6SrfYYbTtMfRMAuBJ9ssxex5qsoLnatOzJWNrYHlE](https://magic-ai-factory.com/api/sandbox/view/sandbox-be96fcda86f64418b1119a11df51093e?preview_token=1k6SrfYYbTtMfRMAuBJ9ssxex5qsoLnatOzJWNrYHlE)
-<!-- /aicom-live-url -->
-
 <!-- aicom-readme-badges -->
 <p align="left">
   <img src="docs/badges/ci.svg" alt="CI" />

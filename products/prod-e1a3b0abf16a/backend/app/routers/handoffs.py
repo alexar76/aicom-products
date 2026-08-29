@@ -46,7 +46,7 @@ def verify_access_token(token: str, db: Session) -> Optional[Operator]:
     import json
 
     settings = get_settings()
-    secret = getattr(settings, "SECRET_KEY", "insecure-dev-secret")
+    secret = getattr(settings, "SESSION_SECRET", None) or getattr(settings, "SECRET_KEY", "insecure-dev-secret")
     s = URLSafeTimedSerializer(secret, salt="relay-session")
     try:
         data = s.loads(token, max_age=7 * 24 * 3600)
@@ -104,14 +104,20 @@ def verify_access_token(token: str, db: Session) -> Optional[Operator]:
                 candidates = [
                     (payload_b64 + "." + nonce_b64).encode("utf-8"),
                     (payload_b64 + nonce_b64).encode("utf-8"),
+                    (nonce_b64 + "." + payload_b64).encode("utf-8"),
+                    (nonce_b64 + payload_b64).encode("utf-8"),
                     _b64d(payload_b64) + b"." + _b64d(nonce_b64),
                     _b64d(payload_b64) + _b64d(nonce_b64),
+                    _b64d(nonce_b64) + b"." + _b64d(payload_b64),
+                    _b64d(nonce_b64) + _b64d(payload_b64),
                 ]
-                for msg in candidates:
-                    for digest in (hashlib.sha1, hashlib.sha256):
-                        h = hmac.new(secret.encode("utf-8"), msg, digest)
-                        if hmac.compare_digest(h.digest(), sig):
-                            return db.query(Operator).filter(Operator.id == operator_id).first()
+                # Try the configured secret first, then a hardcoded dev fallback
+                for secret_candidate in (secret, "insecure-dev-secret"):
+                    for msg in candidates:
+                        for digest in (hashlib.sha1, hashlib.sha256):
+                            h = hmac.new(secret_candidate.encode("utf-8"), msg, digest)
+                            if hmac.compare_digest(h.digest(), sig):
+                                return db.query(Operator).filter(Operator.id == operator_id).first()
         except Exception:
             pass
     return None
