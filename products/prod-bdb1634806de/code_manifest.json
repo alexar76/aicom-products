@@ -2,16 +2,11 @@
   "product_id": "prod-bdb1634806de",
   "delivery_mode": "web_app",
   "admin_instructions_applied": true,
-  "files": [
-    {
-      "path": "backend/app/routers/advisory.py",
-      "edited": true
-    }
-  ],
+  "files": [],
   "dependencies": [],
   "setup_instructions": "",
   "test_commands": [],
   "documentation": "",
-  "created_at": 1787894418.627635,
+  "created_at": 1787937945.1320424,
   "agent": "developer"
 }

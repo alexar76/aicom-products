@@ -33,7 +33,7 @@ Each folder under `products/` is one factory product id. Same table lives in [PR
 <!-- aicom-product-map -->
 | Folder | Product | Description | Live |
 | --- | --- | --- | --- |
-| [`products/prod-bdb1634806de/`](products/prod-bdb1634806de/) | Sentinel | Every safety statement is proven with a signed evidence receipt. | [demo](https://prod-bdb1634806de.vercel.app) |
+| [`products/prod-bdb1634806de/`](products/prod-bdb1634806de/) | Sentinel | Every safety statement is proven with a signed evidence receipt — no black-box AI. | [demo](https://prod-bdb1634806de.vercel.app/) |
 | [`products/prod-e1a3b0abf16a/`](products/prod-e1a3b0abf16a/) | Relay — Verified Handoff Desk | Paste an AI draft. Run a skeptic pass. Ship a Human-verified handoff to your client in under 90 seconds. | — |
 <!-- /aicom-product-map -->
 > **Reading this in the monorepo?** The `products/<id>/` folders linked above are

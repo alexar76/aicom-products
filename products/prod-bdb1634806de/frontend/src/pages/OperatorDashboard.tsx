@@ -55,7 +55,9 @@ export default function OperatorDashboard() {
         fetch("/api/operator/audit?page=1&per_page=5", { headers: authHeaders }),
       ]);
       if (!spendRes.ok || !allowanceRes.ok || !walletRes.ok || !auditRes.ok) {
-        throw new Error("Failed to load operator data");
+        const body = await spendRes.text().catch(() => "");
+        const status = spendRes.ok ? (allowanceRes.ok ? (walletRes.ok ? auditRes.status : walletRes.status) : allowanceRes.status) : spendRes.status;
+        throw new Error(`Failed to load operator data (${status}): ${body}`);
       }
       setSpend(await spendRes.json());
       setAllowance((await allowanceRes.json()) || null);
@@ -89,7 +91,12 @@ export default function OperatorDashboard() {
     <div>
       <h1>Operator Dashboard</h1>
       <p className="muted">Audit, spend, allowance and wallet status.</p>
-      {error && <div className="card"><p style={{ color: "var(--danger)" }}>{error}</p></div>}
+      {error && (
+        <div className="card">
+          <p style={{ color: "var(--danger)" }}>{error}</p>
+          <button className="btn btn-secondary" onClick={() => { setError(null); loadData(); }}>Retry</button>
+        </div>
+      )}
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
         <button className="btn btn-secondary" onClick={handleLogout}>Logout</button>
       </div>

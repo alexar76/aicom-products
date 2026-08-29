@@ -1,43 +1,35 @@
-import os
-import bcrypt
-import jwt
-from datetime import datetime, timedelta, timezone
-from ..config import get_settings
+"""Password hashing and JWT token utilities."""
 
-settings = get_settings()
+from datetime import datetime, timedelta
 
-def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+from jose import jwt
+from passlib.context import CryptContext
 
-get_password_hash = hash_password
+from app.config import settings
 
-def verify_password(password: str, hashed: str) -> bool:
-    return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def create_access_token(user_id: str, email: str) -> str:
-    issuer = os.getenv("JWT_ISSUER", "sentinel")
-    audience = os.getenv("JWT_AUDIENCE", "sentinel-api")
-    payload = {
-        "sub": user_id,
-        "email": email,
-        "iss": issuer,
-        "aud": audience,
-        "exp": datetime.now(timezone.utc) + timedelta(hours=1)
-    }
-    return jwt.encode(payload, settings.secret_key, algorithm="HS256")
 
-def decode_access_token(token: str) -> dict:
-    issuer = os.getenv("JWT_ISSUER", "sentinel")
-    audience = os.getenv("JWT_AUDIENCE", "sentinel-api")
-    try:
-        return jwt.decode(
-            token,
-            settings.secret_key,
-            algorithms=["HS256"],
-            options={"verify_exp": True},
-            issuer=issuer,
-            audience=audience,
-        )
-    except jwt.PyJWTError:
-        return {}
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Check a plain password against its bcrypt hash."""
+    return pwd_context.verify(plain_password, hashed_password)
 
+
+def get_password_hash(password: str) -> str:
+    """Return the bcrypt hash of a password."""
+    return pwd_context.hash(password)
+
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """Create a signed JWT access token."""
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
+    to_encode.update({"exp": expire})
+    return jwt.encode(
+        to_encode,
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM,
+    )
+
+
+hash_password = get_password_hash

@@ -1,15 +1,21 @@
+# aicom-factory-auth-seed-helper
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
+import logging
 
 from ..db import get_db
-from ..config import get_settings
+from ..services.seeding import seed_demo_user
 from ..schemas.auth import LoginRequest
 from ..models.user import User
 from ..utils.security import verify_password, create_access_token, hash_password
 import os
+import jwt
+import datetime
+os.environ.setdefault("SECRET_KEY", "sentinel-dev-secret-change-in-prod")
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
-settings = get_settings()
 
 
 @router.post("/login")
@@ -18,20 +24,32 @@ async def login(
     response: Response,
     db: Session = Depends(get_db),
 ):
-    # Serverless SQLite is empty every cold start — seed before authenticate.
-    email = os.environ.get("SANDBOX_DEMO_EMAIL")
-    password = os.environ.get("SANDBOX_DEMO_PASSWORD")
-    if email and password:
-        existing = db.query(User).filter(User.email == email).first()
-        if not existing:
-            hashed = hash_password(password)
-            demo_user = User(email=email, hashed_password=hashed, role="admin")
-            db.add(demo_user)
-            db.commit()
-    user = db.query(User).filter(User.email == login_data.email).first()
-    if not user or not verify_password(login_data.password, user.hashed_password):
+    seed_demo_user(db)
+
+    # Authenticate
+    try:
+        user = db.query(User).filter(User.email == login_data.email).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+        if not verify_password(login_data.password, user.hashed_password):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("Authentication error")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    token = create_access_token(str(user.id), user.email)
+
+    try:
+        secret = os.environ.get("SECRET_KEY", "sentinel-dev-secret-change-in-prod")
+        payload = {
+            "sub": user.email,
+            "email": user.email,
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+        }
+        token = jwt.encode(payload, secret, algorithm="HS256")
+    except Exception as e:
+        logger.exception("Token generation failed")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Token generation failed")
     response.set_cookie(
         key="access_token",
         value=token,

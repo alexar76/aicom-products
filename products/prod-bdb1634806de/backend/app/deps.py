@@ -1,31 +1,49 @@
-from fastapi import Depends, HTTPException, Request, status
-from sqlalchemy.orm import Session
-from .db import get_db
-from .config import get_settings
-from .utils.security import decode_access_token
-from .models.user import User
+# aicom-factory-jwt-identity
+"""Dependency injection for FastAPI routes."""
 
-def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
-    token = None
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        token = auth_header[len("Bearer "):]
-    else:
-        token = request.cookies.get("access_token")
-    if not token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
-    payload = decode_access_token(token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    user_id = payload.get("sub")
-    if not user_id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    user = db.get(User, user_id)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from jose import JWTError, jwt
+
+from app.db import get_db
+from app.services.seeding import seed_demo_user
+from app.models.user import User
+from app.config import settings
+
+security_scheme = HTTPBearer()
+
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security_scheme),
+    db=Depends(get_db),
+):
+    """Decode JWT and return the authenticated user."""
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+        )
+        email = payload.get("email") or payload.get("sub")
+        if email is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token",
+            )
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+        )
+
+    seed_demo_user(db)
+    user = db.query(User).filter(User.email == email).first()
+    if user is None:
+        user = db.query(User).filter(User.id == str(email)).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+        )
     return user
-
-def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
-    if current_user.role not in ("admin", "editor"):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
-    return current_user

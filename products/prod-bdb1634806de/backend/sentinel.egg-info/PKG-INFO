@@ -32,49 +32,75 @@ Requires-Dist: ruff>=0.4.0; extra == "dev"
 Dynamic: license-file
 
 # Sentinel
-> Every safety statement is proven with a signed evidence receipt.
+
+> Every safety statement is proven with a signed evidence receipt — no black-box AI.
 
 > 🌐 [English](README.md) · [Русский](README.ru.md)
+
+<!-- aicom-live-url -->
+**Live:** [https://prod-bdb1634806de.vercel.app](https://prod-bdb1634806de.vercel.app)
+<!-- /aicom-live-url -->
 
 <!-- aicom-readme-badges -->
 <p align="center">
   <img src="docs/badges/ci.svg" alt="CI" />
   <img src="docs/badges/coverage.svg" alt="coverage" />
-  <img src="docs/badges/license.svg" alt="License: MIT" />
   <img src="docs/badges/tests.svg" alt="tests" />
+  <img src="docs/badges/mesh.svg" alt="AIMarket mesh" />
+  <img src="docs/badges/license.svg" alt="License: MIT" />
 </p>
 <!-- /aicom-readme-badges -->
 
-<p align="center"><img src="docs/gallery/hero.svg" alt="Sentinel hero" width="820"></p>
-
-## Gallery
-| Still | Caption |
-| ----- | ------- |
-| docs/gallery/01.svg | Public widget with location form and hazard cards |
-| docs/gallery/02.svg | Operator dashboard with spend and audit |
+<p align="center">
+  <img src="docs/gallery/hero.svg" alt="Sentinel — location to mesh to signed receipt" width="900" />
+</p>
 
 ## What it is
-Sentinel is an LLM-free, embeddable safety companion that answers "is it safe here right now?" for weather, wildfire, and flood hazards. It uses ATLAS sensor-mesh capabilities via AI-market protocol and deterministic thresholds.
+
+**Sentinel** is an LLM-free, embeddable safety companion. It answers “is it safe here right now?” for weather, wildfire, and flood using **paid ATLAS capabilities** on [AIMarket](https://modelmarket.dev) and **deterministic thresholds**. Every statement can carry a **signed evidence receipt**.
+
+Invented and built by [AI-Factory](https://github.com/alexar76/aicom).
 
 ## What it is not
-Not a forecast, not an LLM opinion, not a risk rating. Every statement is tied to a signed evidence receipt.
+
+Not a forecast. Not an LLM opinion. Not an insurance or regulatory clearance.
+
+## Gallery
+
+| Still | Caption |
+| ----- | ------- |
+| ![Public widget](docs/gallery/01-widget.png) | Public widget — location form and live safety report |
+| ![Operator](docs/gallery/02-operator.svg) | Operator dashboard — spend, wallet, audit |
+| ![Embed](docs/gallery/03-embed.svg) | Drop-in `embed.js` for partner sites |
+
+## Docs
+
+| Guide | Audience |
+| ----- | -------- |
+| [User guide](docs/user-guide.md) | Visitors & operators using the UI |
+| [Admin guide](docs/admin.md) | Deploy, escrow funding, republish |
+| [Use cases](docs/use-cases.md) | Who this is for (and not for) |
+| [Operator/dev guide](docs/en.md) | Architecture, env, tests |
+| [Русский](docs/ru.md) | Локализованный гайд |
 
 ## Quick start
+
 ```bash
 docker compose up -d --build
+# API http://localhost:8000 — frontend http://localhost:3000
 ```
-API at http://localhost:8000, frontend at http://localhost:3000.
+
+Mesh on a live deploy needs a funded Base escrow channel (≥ **$1 USDC**). See [admin.md](docs/admin.md).
 
 ## Tests
+
 ```bash
-cd backend && pytest tests/unit -v --cov=app --cov-report=term-missing --cov-fail-under=60
+cd backend && pytest tests/unit -v --cov=app --cov-fail-under=60
 cd backend && pytest tests/integration -v
-cd frontend && npm run test:unit -- --coverage
+cd frontend && npm run test:unit
 cd frontend && npm run e2e
 ```
 
-## Docs
-- [English](docs/en.md) · [Русский](docs/ru.md)
-
 ## License
+
 MIT

@@ -35,3 +35,7 @@ backend/sentinel.egg-info/SOURCES.txt
 backend/sentinel.egg-info/dependency_links.txt
 backend/sentinel.egg-info/requires.txt
 backend/sentinel.egg-info/top_level.txt
+backend/tests/unit/test___init__.py
+backend/tests/unit/test_acceptance.py
+backend/tests/unit/test_audit.py
+backend/tests/unit/test_heartbeat.py

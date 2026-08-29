@@ -4,7 +4,7 @@
 > 🌐 [English](README.md) · [Русский](README.ru.md)
 
 <!-- aicom-live-url -->
-**Live:** [https://prod-bdb1634806de.vercel.app](https://prod-bdb1634806de.vercel.app)
+**Live:** [https://prod-bdb1634806de.vercel.app/](https://prod-bdb1634806de.vercel.app/)
 <!-- /aicom-live-url -->
 
 <!-- aicom-readme-badges -->

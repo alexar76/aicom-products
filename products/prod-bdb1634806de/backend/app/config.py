@@ -44,6 +44,13 @@ class _AicomSettingsView:
 
     def __getattr__(self, name: str):
         inner = object.__getattribute__(self, "_inner")
+        if name in ("ALGORITHM", "algorithm"):
+            for cand in ("algorithm", "ALGORITHM", "jwt_algorithm"):
+                if hasattr(inner, cand):
+                    val = getattr(inner, cand)
+                    if val:
+                        return val
+            return "HS256"
         if hasattr(inner, name):
             return getattr(inner, name)
         low = name.lower()

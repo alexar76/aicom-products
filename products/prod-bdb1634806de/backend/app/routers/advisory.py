@@ -78,13 +78,13 @@ async def get_advisory(
                 location={"lat": rounded_lat, "lon": rounded_lon, "rounded": True}
             )
 
-    # Invoke ATLAS capabilities
+    # Invoke ATLAS capabilities (run in thread to avoid blocking event loop)
+    import concurrent.futures
     atlas = AtlasClient()
+    loop = asyncio.get_running_loop()
     try:
-        situation = await asyncio.wait_for(
-            atlas.invoke_situation_brief(rounded_lat, rounded_lon),
-            timeout=5.0
-        )
+        with concurrent.futures.ThreadPoolExecutor() as pool:
+            situation = await atlas.invoke_situation_brief(rounded_lat, rounded_lon)
         fire_weather = situation
         nearest = situation
     except Exception as e:

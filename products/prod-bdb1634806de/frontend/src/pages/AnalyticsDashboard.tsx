@@ -29,7 +29,11 @@ export default function AnalyticsDashboard() {
         fetch("/api/analytics/dashboards", { headers: authHeaders }),
         fetch("/api/analytics/metrics", { headers: authHeaders }),
       ]);
-      if (!dashRes.ok || !metricRes.ok) throw new Error("Failed to load analytics");
+      if (!dashRes.ok || !metricRes.ok) {
+        const body = await dashRes.text().catch(() => "");
+        const status = dashRes.ok ? metricRes.status : dashRes.status;
+        throw new Error(`Failed to load analytics (${status}): ${body}`);
+      }
       setDashboards(await dashRes.json());
       setMetrics(await metricRes.json());
     } catch (err) {
@@ -99,7 +103,12 @@ export default function AnalyticsDashboard() {
     <div>
       <h1>Analytics / BI Workspace</h1>
       <p className="muted">Define metrics, build charts, share dashboards with lifecycle states.</p>
-      {error && <div className="card"><p style={{ color: "var(--danger)" }}>{error}</p></div>}
+      {error && (
+        <div className="card">
+          <p style={{ color: "var(--danger)" }}>{error}</p>
+          <button className="btn btn-secondary" onClick={() => { setError(null); loadData(); }}>Retry</button>
+        </div>
+      )}
 
       <div className="card">
         <h2>Create Dashboard</h2>
