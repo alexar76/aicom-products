@@ -67,6 +67,12 @@ Weather, wildfire and flood advisory with **signed evidence receipts** — no bl
 Paste an AI draft, run a skeptic pass, ship a **human-verified handoff** to the client. Factory-built full stack under `products/prod-e1a3b0abf16a/`.
 
 <p align="center">
+  <a href="products/prod-e1a3b0abf16a/">
+    <img src="docs/gallery/relay.svg" alt="Relay Verified Handoff Desk — wax-seal hero for a notarized AI handoff" width="720" />
+  </a>
+</p>
+
+<p align="center">
   <a href="products/prod-e1a3b0abf16a/"><code>products/prod-e1a3b0abf16a</code></a>
 </p>
 
