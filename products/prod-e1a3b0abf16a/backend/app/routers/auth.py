@@ -26,11 +26,8 @@ class LoginResponse(BaseModel):
 
 def _create_access_token(operator_id) -> str:
     """Create a signed token carrying the operator id."""
-    from itsdangerous import URLSafeTimedSerializer
-
-    secret = getattr(settings, "SESSION_SECRET", "dev-secret")
-    serializer = URLSafeTimedSerializer(secret)
-    return serializer.dumps({"sub": str(operator_id)}, salt="relay-access-token")
+    from ..security import create_session_token
+    return create_session_token(str(operator_id))  # aicom-factory-relay-spa-auth
 
 
 def _set_session_cookie(response: Response, operator_id) -> str:
@@ -38,7 +35,7 @@ def _set_session_cookie(response: Response, operator_id) -> str:
     secure = getattr(settings, "SESSION_COOKIE_SECURE", False)
     max_age = getattr(settings, "SESSION_COOKIE_MAX_AGE", 60 * 60 * 24 * 7)  # 7 days
     response.set_cookie(
-        key="session",
+        key="relay_session",
         value=token,
         httponly=True,
         secure=secure,

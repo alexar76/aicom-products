@@ -48,10 +48,10 @@ Dynamic: license-file
 
 | Still | Caption |
 | ----- | ------- |
-| `docs/gallery/hero.svg` | Wax-seal hero — a notarized AI handoff, ready to send. |
-| `docs/gallery/01-inbox.svg` | Operator inbox — pending, approved, rejected in three ledger columns. |
-| `docs/gallery/02-share.svg` | Branded public share page — Human-verified stamp + accent strip. |
-| `docs/gallery/03-embed.svg` | Embeddable verification widget — drop-in trust signal for client sites. |
+| ![hero](docs/gallery/hero.svg) | Wax-seal hero — a notarized AI handoff, ready to send. |
+| ![01 inbox](docs/gallery/01-inbox.svg) | Operator inbox — pending, approved, rejected in three ledger columns. |
+| ![02 share](docs/gallery/02-share.svg) | Branded public share page — Human-verified stamp + accent strip. |
+| ![03 embed](docs/gallery/03-embed.svg) | Embeddable verification widget — drop-in trust signal for client sites. |
 
 ## What it is
 

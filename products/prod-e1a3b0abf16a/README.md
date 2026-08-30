@@ -4,6 +4,10 @@
 
 > 🌐 [English](README.md) · [Español](README.es.md)
 
+<!-- aicom-live-url -->
+**Live:** [https://magic-ai-factory.com/api/sandbox/view/sandbox-aee46b1348504f59afe0304ad6d49b4c?preview_token=QExeXwySRw_cG-WNbnpwKTXnFiD0F0HvRYuEvXImItU](https://magic-ai-factory.com/api/sandbox/view/sandbox-aee46b1348504f59afe0304ad6d49b4c?preview_token=QExeXwySRw_cG-WNbnpwKTXnFiD0F0HvRYuEvXImItU)
+<!-- /aicom-live-url -->
+
 <!-- aicom-readme-badges -->
 <p align="left">
   <img src="docs/badges/ci.svg" alt="CI" />
@@ -19,10 +23,10 @@
 
 | Still | Caption |
 | ----- | ------- |
-| `docs/gallery/hero.svg` | Wax-seal hero — a notarized AI handoff, ready to send. |
-| `docs/gallery/01-inbox.svg` | Operator inbox — pending, approved, rejected in three ledger columns. |
-| `docs/gallery/02-share.svg` | Branded public share page — Human-verified stamp + accent strip. |
-| `docs/gallery/03-embed.svg` | Embeddable verification widget — drop-in trust signal for client sites. |
+| ![hero](docs/gallery/hero.svg) | Wax-seal hero — a notarized AI handoff, ready to send. |
+| ![01 inbox](docs/gallery/01-inbox.svg) | Operator inbox — pending, approved, rejected in three ledger columns. |
+| ![02 share](docs/gallery/02-share.svg) | Branded public share page — Human-verified stamp + accent strip. |
+| ![03 embed](docs/gallery/03-embed.svg) | Embeddable verification widget — drop-in trust signal for client sites. |
 
 ## What it is
 

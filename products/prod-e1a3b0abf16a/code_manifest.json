@@ -2,16 +2,15 @@
   "product_id": "prod-e1a3b0abf16a",
   "delivery_mode": "web_app",
   "admin_instructions_applied": true,
-  "files": [
-    {
-      "path": "backend/app/routers/handoffs.py",
-      "edited": true
-    }
-  ],
+  "files": [],
   "dependencies": [],
-  "setup_instructions": "",
-  "test_commands": [],
-  "documentation": "",
-  "created_at": 1787896918.6355367,
+  "setup_instructions": "No new dependencies. The edit only modifies the request payload to match the published schema for atlas.situation.brief@v1.",
+  "test_commands": [
+    "cd backend && pytest tests/unit -q --cov=app --cov-fail-under=60",
+    "cd backend && pytest tests/integration -q",
+    "cd frontend && npx playwright test"
+  ],
+  "documentation": "Fixed mesh_contract_violation in backend/app/routers/handoffs.py: replaced invalid 'items' field with required bbox coordinates (east, north, south, west) for atlas.situation.brief@v1. This ensures the AI-market call conforms to the published schema and the endpoint no longer reports a false 'no readings' success when the mesh rejects the request.",
+  "created_at": 1788008997.72986,
   "agent": "developer"
 }

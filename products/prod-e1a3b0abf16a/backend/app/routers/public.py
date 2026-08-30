@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from ..config import get_settings
 from ..db import get_db
 from ..models import Handoff
-from ..schemas import PublicHandoffOut, PublicReadOut, PublicWorkspaceOut
+from ..schemas import PublicHandoffShareOut, PublicReadOut, PublicWorkspaceOut  # aicom-factory-relay-public-export
 from ..services import handoff_service
 
 router = APIRouter(tags=["public"])
@@ -56,8 +56,8 @@ def read_public(
         raise HTTPException(status_code=404, detail="not available")
     workspace = h.workspace
     return PublicReadOut(
-        handoff=PublicHandoffOut(
-            id=h.id,
+        handoff=PublicHandoffShareOut(
+            id=str(h.id),  # aicom-factory-relay-public-export
             client_name=h.client_name,
             project_name=h.project_name,
             source_ai_tool=h.source_ai_tool,
@@ -69,7 +69,7 @@ def read_public(
             name=workspace.name,
             logo_url=workspace.logo_url,
             accent_color=workspace.accent_color,
-            tier=workspace.tier.value,
+            tier=(workspace.tier.value if hasattr(workspace.tier, 'value') else str(workspace.tier)),  # aicom-factory-relay-public-export
         ),
         verification_source=h.verification_source.value,
     )

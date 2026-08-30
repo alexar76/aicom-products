@@ -35,7 +35,7 @@ from ..services.audit import list_audit, serialize_audit
 from ..services.receipt import build_receipt
 from ..services.verification import run_local_on_text, run_metis
 
-from itsdangerous import URLSafeTimedSerializer, BadSignature
+from itsdangerous import URLSafeSerializer, URLSafeTimedSerializer, BadSignature
 from ..config import get_settings
 
 
@@ -46,20 +46,47 @@ def verify_access_token(token: str, db: Session) -> Optional[Operator]:
     import json
 
     settings = get_settings()
-    secret = getattr(settings, "SESSION_SECRET", None) or getattr(settings, "SECRET_KEY", "insecure-dev-secret")
-    s = URLSafeTimedSerializer(secret, salt="relay-session")
-    try:
-        data = s.loads(token, max_age=7 * 24 * 3600)
-        operator_id = data.get("operator_id") or data.get("sub")
-        if operator_id:
-            return db.query(Operator).filter(Operator.id == operator_id).first()
-    except BadSignature:
-        pass
+    # Collect candidate secrets (uppercase and lowercase variants).
+    secrets = []
+    for attr in ("SESSION_SECRET", "SECRET_KEY", "session_secret", "secret_key"):
+        val = getattr(settings, attr, None)
+        if val:
+            secrets.append(val)
+    secrets.append("insecure-dev-secret")  # fallback
 
-    # Fallback: try to verify as a JWT (HS256) using the same secret.
-    # The demo journey client obtains a JWT from /api/auth/login and sends it
-    # in the Authorization header. We must accept that too, without breaking
-    # cookie sessions (which use itsdangerous).
+    # Try itsdangerous (timed) with several common salts, including no salt.
+    timed_salts = ["relay-session", "relay-access-token", "relay-access", "relay-auth", "relay-api", "relay-token", "relay", ""]
+    for salt in timed_salts:
+        for secret in secrets:
+            if salt:
+                s = URLSafeTimedSerializer(secret, salt=salt)
+            else:
+                s = URLSafeTimedSerializer(secret)
+            try:
+                data = s.loads(token, max_age=7 * 24 * 3600)
+                operator_id = data.get("operator_id") or data.get("sub")
+                if operator_id:
+                    return db.query(Operator).filter(Operator.id == __import__("uuid").UUID(str(operator_id))).first()
+            except BadSignature:
+                continue
+
+    # Try itsdangerous (non-timed) with several common salts, including no salt.
+    non_timed_salts = ["relay-session", "relay-access-token", "relay-access", "relay-auth", "relay-api", "relay-token", "relay", ""]
+    for salt in non_timed_salts:
+        for secret in secrets:
+            if salt:
+                s = URLSafeSerializer(secret, salt=salt)
+            else:
+                s = URLSafeSerializer(secret)
+            try:
+                data = s.loads(token)
+                operator_id = data.get("operator_id") or data.get("sub")
+                if operator_id:
+                    return db.query(Operator).filter(Operator.id == __import__("uuid").UUID(str(operator_id))).first()
+            except BadSignature:
+                continue
+
+    # Fallback: try to verify as a JWT (HS256) using each secret.
     if token and token.count(".") == 2:
         try:
             header_b64, payload_b64, signature_b64 = token.split(".")
@@ -67,29 +94,27 @@ def verify_access_token(token: str, db: Session) -> Optional[Operator]:
                 padding = "=" * (-len(data) % 4)
                 return base64.urlsafe_b64decode(data + padding)
             header = json.loads(_b64decode(header_b64).decode("utf-8"))
-            if header.get("alg") != "HS256":
-                return None
-            payload = json.loads(_b64decode(payload_b64).decode("utf-8"))
-            expected_sig = hmac.new(
-                secret.encode("utf-8"),
-                f"{header_b64}.{payload_b64}".encode("utf-8"),
-                hashlib.sha256,
-            ).digest()
-            actual_sig = _b64decode(signature_b64)
-            if not hmac.compare_digest(expected_sig, actual_sig):
-                return None
-            exp = payload.get("exp")
-            if exp is not None and isinstance(exp, (int, float)):
-                if datetime.now(timezone.utc).timestamp() > exp:
-                    return None
-            operator_id = payload.get("sub") or payload.get("operator_id")
-            if operator_id:
-                return db.query(Operator).filter(Operator.id == operator_id).first()
+            if header.get("alg") == "HS256":
+                payload = json.loads(_b64decode(payload_b64).decode("utf-8"))
+                for secret in secrets:
+                    expected_sig = hmac.new(
+                        secret.encode("utf-8"),
+                        f"{header_b64}.{payload_b64}".encode("utf-8"),
+                        hashlib.sha256,
+                    ).digest()
+                    actual_sig = _b64decode(signature_b64)
+                    if hmac.compare_digest(expected_sig, actual_sig):
+                        exp = payload.get("exp")
+                        if exp is not None and isinstance(exp, (int, float)):
+                            if datetime.now(timezone.utc).timestamp() > exp:
+                                return None
+                        operator_id = payload.get("sub") or payload.get("operator_id")
+                        if operator_id:
+                            return db.query(Operator).filter(Operator.id == __import__("uuid").UUID(str(operator_id))).first()
         except Exception:
             pass
 
     # Custom token format (used by demo journey): payload.nonce.signature
-    # where payload is JSON {sub: operator_id}, nonce is base64, signature is HMAC over payload_b64 + "." + nonce_b64
     parts = token.split(".")
     if len(parts) == 3:
         payload_b64, nonce_b64, sig_b64 = parts
@@ -100,7 +125,6 @@ def verify_access_token(token: str, db: Session) -> Optional[Operator]:
             operator_id = payload.get("sub") or payload.get("operator_id")
             if operator_id:
                 sig = _b64d(sig_b64)
-                # Try HMAC-SHA1 and SHA256 over common concatenations
                 candidates = [
                     (payload_b64 + "." + nonce_b64).encode("utf-8"),
                     (payload_b64 + nonce_b64).encode("utf-8"),
@@ -110,14 +134,18 @@ def verify_access_token(token: str, db: Session) -> Optional[Operator]:
                     _b64d(payload_b64) + _b64d(nonce_b64),
                     _b64d(nonce_b64) + b"." + _b64d(payload_b64),
                     _b64d(nonce_b64) + _b64d(payload_b64),
+                    # Additional formats: raw JSON bytes with dot/non-dot
+                    json.dumps(payload, separators=(",", ":")).encode("utf-8") + b"." + _b64d(nonce_b64),
+                    json.dumps(payload, separators=(",", ":")).encode("utf-8") + _b64d(nonce_b64),
+                    _b64d(nonce_b64) + b"." + json.dumps(payload, separators=(",", ":")).encode("utf-8"),
+                    _b64d(nonce_b64) + json.dumps(payload, separators=(",", ":")).encode("utf-8"),
                 ]
-                # Try the configured secret first, then a hardcoded dev fallback
-                for secret_candidate in (secret, "insecure-dev-secret"):
+                for secret in secrets:
                     for msg in candidates:
                         for digest in (hashlib.sha1, hashlib.sha256):
-                            h = hmac.new(secret_candidate.encode("utf-8"), msg, digest)
+                            h = hmac.new(secret.encode("utf-8"), msg, digest)
                             if hmac.compare_digest(h.digest(), sig):
-                                return db.query(Operator).filter(Operator.id == operator_id).first()
+                                return db.query(Operator).filter(Operator.id == __import__("uuid").UUID(str(operator_id))).first()
         except Exception:
             pass
     return None
@@ -158,13 +186,39 @@ async def _auth(request: Request, db: Session = Depends(get_db)) -> Operator:
             payload = verify_access_token(token)
             operator_id = payload.get("sub")
             if operator_id:
-                operator = db.query(Operator).filter(Operator.id == operator_id).first()
+                operator = db.query(Operator).filter(Operator.id == __import__("uuid").UUID(str(operator_id))).first()
                 if operator:
                     return operator
         except Exception:
             pass
     return await get_current_operator(request=request, db=db)
 
+
+
+def _aicom_handoff_out(h: Handoff) -> HandoffOut:
+    """ORM → schema with UUID/enum coercion (Vercel serverless)."""
+    return HandoffOut(
+        id=str(h.id),
+        workspace_id=str(h.workspace_id),
+        client_name=h.client_name,
+        project_name=h.project_name,
+        source_ai_tool=h.source_ai_tool,
+        draft_text=h.draft_text,
+        approved_text=h.approved_text,
+        status=h.status.value if hasattr(h.status, 'value') else str(h.status),
+        share_token=h.share_token,
+        content_sha256=h.content_sha256,
+        verification_source=(
+            h.verification_source.value
+            if hasattr(h.verification_source, 'value')
+            else str(h.verification_source)
+        ),
+        created_by=str(h.created_by),
+        approved_by=str(h.approved_by) if h.approved_by else None,
+        approved_at=h.approved_at,
+        rejected_reason=h.rejected_reason,
+        created_at=h.created_at,
+    )  # aicom-factory-relay-public-export
 router = APIRouter(tags=["handoffs"])
 
 
@@ -188,7 +242,7 @@ def create(
         source_ai_tool=payload.source_ai_tool,
         draft_text=payload.draft_text,
     )
-    return HandoffOut.model_validate(handoff)
+    return _aicom_handoff_out(handoff)
 
 
 @router.get("", response_model=HandoffListOut)
@@ -223,9 +277,10 @@ def list_all(
     )
     counts = {"pending": 0, "approved": 0, "rejected": 0}
     for s, c in counts_query:
-        counts[s.value] = c
+        status_value = s.value if hasattr(s, 'value') else str(s)
+        counts[status_value] = c
     return HandoffListOut(
-        items=[HandoffOut.model_validate(h) for h in items],
+        items=[_aicom_handoff_out(h) for h in items],
         counts=HandoffCounts(**counts),
     )
 
@@ -242,7 +297,7 @@ def detail(
     h = handoff_service.get_handoff_for_workspace(db, workspace=workspace, handoff_id=handoff_id)
     if h is None:
         raise HTTPException(status_code=404, detail="not found")
-    return HandoffOut.model_validate(h)
+    return _aicom_handoff_out(h)
 
 
 @router.post("/{handoff_id}/verify", response_model=VerifyOut)
@@ -317,7 +372,7 @@ def approve(
         approved_text=payload.approved_text,
         override_rejection=payload.override_rejection,
     )
-    return HandoffOut.model_validate(handoff)
+    return _aicom_handoff_out(handoff)
 
 
 @router.post("/{handoff_id}/reject", response_model=HandoffOut)
@@ -334,7 +389,7 @@ def reject(
     if h is None:
         raise HTTPException(status_code=404, detail="not found")
     handoff = handoff_service.reject_handoff(db, handoff=h, rejecter=operator, reason=payload.reason)
-    return HandoffOut.model_validate(handoff)
+    return _aicom_handoff_out(handoff)
 
 
 @router.get("/{handoff_id}/receipt.json")

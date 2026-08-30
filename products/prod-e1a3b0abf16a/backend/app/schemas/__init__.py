@@ -14,7 +14,18 @@ if str(_ROOT) not in sys.path:
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from uuid import UUID
+
+from pydantic import BaseModel as PydanticBaseModel, Field, field_validator
+
+
+class BaseModel(PydanticBaseModel):
+    model_config = {"from_attributes": True}
+
+    @field_validator("*", mode="before")
+    @classmethod
+    def stringify_uuid(cls, value):
+        return str(value) if isinstance(value, UUID) else value
 
 
 # ---------------------------------------------------------------------------
@@ -162,7 +173,24 @@ class SignupIn(BaseModel):
 
 BrandingIn = BrandingUpdate
 BrandingOut = BrandingUpdate
-PublicReadOut = PublicHandoffOut
+
+
+class PublicHandoffShareOut(BaseModel):
+    """Approved handoff slice for the public share page."""
+    id: str
+    client_name: str
+    project_name: str
+    source_ai_tool: str
+    approved_text: str
+    approved_at: Optional[datetime] = None
+    content_sha256: str
+
+
+class PublicReadOut(BaseModel):
+    handoff: PublicHandoffShareOut
+    workspace: WorkspaceOut
+    verification_source: str  # aicom-factory-relay-public-export
+
 PublicWorkspaceOut = WorkspaceOut
 ApproveIn = ApproveRequest
 

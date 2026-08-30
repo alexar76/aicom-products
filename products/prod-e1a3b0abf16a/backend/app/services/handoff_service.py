@@ -103,7 +103,7 @@ def get_handoff_for_workspace(
 ) -> Optional[Handoff]:
     return (
         db.query(Handoff)
-        .filter(Handoff.id == handoff_id, Handoff.workspace_id == workspace.id)
+        .filter(Handoff.id == __import__("uuid").UUID(str(handoff_id)), Handoff.workspace_id == workspace.id)
         .first()
     )
 
@@ -156,10 +156,10 @@ def save_verification(
             payload_json=json.dumps(
                 {
                     "items": [
-                        {"category": it.category.value, "passed": it.passed}
+                        {"category": (it.category.value if hasattr(it.category, "value") else str(it.category)), "passed": it.passed}
                         for it in persisted
                     ],
-                    "source": verification_source.value,
+                    "source": (verification_source.value if hasattr(verification_source, "value") else str(verification_source)),
                 }
             ),
         )

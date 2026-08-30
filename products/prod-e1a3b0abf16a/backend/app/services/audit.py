@@ -29,8 +29,8 @@ def serialize_audit(entries: List[AuditEntry], email_by_id: dict) -> list[dict]:
     for e in entries:
         out.append(
             {
-                "id": e.id,
-                "action": e.action.value,
+                "id": str(e.id),
+                "action": (e.action.value if hasattr(e.action, "value") else str(e.action)),
                 "actor_email": email_by_id.get(e.actor_id),
                 "payload_json": e.payload_json,
                 "created_at": e.created_at.isoformat() if e.created_at else None,
