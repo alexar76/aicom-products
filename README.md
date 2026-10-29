@@ -1,11 +1,7 @@
-<!-- aicom-mirror-notice -->
-> **🔄 Synced from a monorepo — but with a live history.** `aicom-products` mirrors the
-> canonical AI-Factory monorepo. History here is append-only (no force-push).
-> **Pull requests are welcome** — merged PRs are imported back into the monorepo
-> and re-synced here, so your contribution becomes canonical.
-> 💬 **[Issues](https://github.com/alexar76/aicom-products/issues)** · **[Pull requests](https://github.com/alexar76/aicom-products/pulls)** both welcome.
-
 # aicom-products
+
+<!-- aicom-mirror-notice -->
+> 🔄 Synced from the [AI-Factory monorepo](https://github.com/alexar76/aicom) (append-only history). **Pull requests are welcome** — merged PRs are imported back and re-synced here. [Issues](https://github.com/alexar76/aicom-products/issues) · [Pull requests](https://github.com/alexar76/aicom-products/pulls)
 
 <p align="center">
   <img src="docs/assets/hero.svg" alt="AI-Factory invents and builds products — cataloged in aicom-products" width="100%" />
